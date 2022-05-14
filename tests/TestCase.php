@@ -2,9 +2,9 @@
 
 namespace Dinhdjj\Thesieure\Tests;
 
+use Dinhdjj\Thesieure\ThesieureServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Dinhdjj\Thesieure\ThesieureServiceProvider;
 
 class TestCase extends Orchestra
 {
