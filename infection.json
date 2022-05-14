@@ -1,0 +1,26 @@
+{
+    "source": {
+        "directories": ["src"]
+    },
+    "phpUnit": {
+        "configDir": ""
+    },
+    "logs": {
+        "text": "infection.log",
+        "html": "infection.html"
+    },
+    "mutators": {
+        "@arithmetic": true,
+        "@boolean": true,
+        "@conditional_boundary": true,
+        "@conditional_negotiation": true,
+        "@number": true,
+        "@operator": true,
+        "@regex": true,
+        "@removal": true,
+        "@return_value": true,
+        "@sort": true,
+        "@unwrap": true
+    },
+    "testFramework": "pest"
+}
