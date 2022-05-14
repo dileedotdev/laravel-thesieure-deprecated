@@ -24,10 +24,8 @@ class ThesieureServiceProvider extends PackageServiceProvider
             ;
     }
 
-    public function packageRegistered()
+    public function packageRegistered(): void
     {
-        $this->app->singleton('thesieure', function () {
-            return new Thesieure();
-        });
+        $this->app->singleton('thesieure', fn () => new Thesieure());
     }
 }
