@@ -15,11 +15,58 @@ You can install the package via composer:
 composer require dinhdjj/thesieure
 ```
 
-## Usage
+You can publish the config file with:
+
+```bash
+php artisan vendor:publish --tag="thesieure-config"
+```
+
+This is the contents of the published config file:
 
 ```php
+return [
+    'domain' => env('THESIEURE_DOMAIN', 'thesieure.com'),
+    'partner_id' => env('THESIEURE_PARTNER_ID'),
+    'partner_key' => env('THESIEURE_PARTNER_KEY'),
 
+    'routes' => [
+        'callback' => [
+            'name' => 'thesieure.callback',
+            'uri' => 'api/thesieure/callback',
+            'middleware' => [
+                'api',
+            ],
+            'method' => 'post',
+        ],
+    ],
+];
 ```
+
+## Usage
+
+Firstly, you should register logic to handle the callback from thesieure.
+
+```php
+// app/Providers/AppServiceProvider.php
+
+public function boot()
+{
+    \Thesieure::onCallback(function(Dinhdjj\Thesieure\Types\ApprovedCard $card){
+        // Do something
+    });
+}
+```
+
+Next, you should register the callback in thesieure. By default, the callback route is`post`:`/api/thesieure/callback`.
+
+Finally, when you need to send a card to `thesieure` approve:
+
+```php
+    \Thesieure::approveCard('VIETTEL', 20000, '20002346728333', '239847923483242432', 'anything');
+    \Thesieure::updateApprovedCard('VIETTEL', 20000, '20002346728333', '239847923483242432', 'anything');
+```
+
+When `thesieure` response the result, error or when you call `approveCard`, `updateApprovedCard` method, closure you transfer to `\Thesieure::onCallback` will be invoked. All things you need to do is register logic in `\Thesieure::onCallback`.
 
 ## Testing
 

@@ -24,9 +24,11 @@ class TestCase extends Orchestra
         ];
     }
 
-    public function getEnvironmentSetUp($app)
+    public function getEnvironmentSetUp($app): void
     {
         config()->set('database.default', 'testing');
+        config()->set('thesieure.partner_id', '6797019371');
+        config()->set('thesieure.partner_key', 'ae76b17456215a4d861d7ddae5347da3');
 
         /*
         $migration = include __DIR__.'/../database/migrations/create_thesieure_table.php.stub';
