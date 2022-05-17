@@ -52,7 +52,23 @@ Firstly, you should register logic to handle the callback from thesieure.
 public function boot()
 {
     \Thesieure::onCallback(function(Dinhdjj\Thesieure\Types\ApprovedCard $card){
-        // Do something
+        // Each property of $card equivalent to thesieure's attributes read more on `thesieure`
+        // Besides, $card also have some helper methods
+
+        if($card->isApproving()){
+            // Do something
+        }
+
+        if($card->isSuccess()){
+            $receivedValue = $card->getReceivedValue();
+            $realFaceValue = $card->getRealFaceValue();
+
+            // Do something
+        }
+
+        if($card->isError()){
+            // Do something
+        }
     });
 }
 ```

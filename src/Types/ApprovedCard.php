@@ -16,4 +16,37 @@ class ApprovedCard
         public ?string $message,
     ) {
     }
+
+    public function isApproving(): bool
+    {
+        return 99 === $this->status;
+    }
+
+    public function isSuccess(): bool
+    {
+        return \in_array($this->status, [1, 2], true);
+    }
+
+    public function isError(): bool
+    {
+        return \in_array($this->status, [3, 4, 100], true);
+    }
+
+    public function getReceivedValue(): int
+    {
+        if (!$this->isSuccess()) {
+            return 0;
+        }
+
+        return $this->amount;
+    }
+
+    public function getRealFaceValue(): int
+    {
+        if (!$this->isSuccess()) {
+            return 0;
+        }
+
+        return $this->value;
+    }
 }
