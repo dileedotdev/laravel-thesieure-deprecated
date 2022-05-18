@@ -8,9 +8,12 @@ use Dinhdjj\Thesieure\Types\ApprovedCard;
 use Dinhdjj\Thesieure\Types\FetchedCardType;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Traits\Macroable;
 
 class Thesieure
 {
+    use Macroable;
+
     protected array $onCallbackClosures = [];
 
     public function __construct(
