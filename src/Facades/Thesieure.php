@@ -5,6 +5,7 @@ namespace Dinhdjj\Thesieure\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
+ * @method static mixed getConfig(string $name)                                                                                                        Get thesieure config.
  * @method static void onCallback(Closure $closure)                                                                                                    Register a closure will be invoke when thesieure callback to server.
  * @method static void handleCallback(\Dinhdjj\Thesieure\Types\ApprovedCard $card)                                                                     Invoke all closures registered by onCallback.
  * @method static \Dinhdjj\Thesieure\Types\FetchedCardType[] fetchCardTypes()                                                                          Get card types from thesieure.

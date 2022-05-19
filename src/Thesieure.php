@@ -3,6 +3,7 @@
 namespace Dinhdjj\Thesieure;
 
 use Closure;
+use Dinhdjj\Thesieure\Exceptions\InvalidThesieureConfigException;
 use Dinhdjj\Thesieure\Exceptions\InvalidThesieureResponseException;
 use Dinhdjj\Thesieure\Types\ApprovedCard;
 use Dinhdjj\Thesieure\Types\FetchedCardType;
@@ -17,10 +18,16 @@ class Thesieure
     protected array $onCallbackClosures = [];
 
     public function __construct(
-        protected string $domain,
-        protected string $partner_id,
-        protected string $partner_key,
     ) {
+    }
+
+    public function getConfig(string $name): mixed
+    {
+        if (!config('thesieure.domain') || !config('thesieure.partner_id') || !config('thesieure.partner_key')) {
+            throw new InvalidThesieureConfigException();
+        }
+
+        return config('thesieure.'.$name);
     }
 
     /**
@@ -48,8 +55,7 @@ class Thesieure
      */
     public function fetchCardTypes(): array
     {
-        $response = Http::get('https://'.$this->domain.'/chargingws/v2/getfee?partner_id='.$this->partner_id)
-        ;
+        $response = Http::get('https://'.$this->getConfig('domain').'/chargingws/v2/getfee?partner_id='.$this->getConfig('partner_id'));
 
         $status = $response->status();
         if ($status >= 300) {
@@ -71,13 +77,13 @@ class Thesieure
      */
     public function approveCard(string $telco, int $value, string $serial, string $code, string $requestId): ApprovedCard
     {
-        $response = Http::post('https://'.$this->domain.'/chargingws/v2', [
+        $response = Http::post('https://'.$this->getConfig('domain').'/chargingws/v2', [
             'telco' => $telco,
             'amount' => $value,
             'serial' => $serial,
             'code' => $code,
             'request_id' => $requestId,
-            'partner_id' => $this->partner_id,
+            'partner_id' => $this->getConfig('partner_id'),
             'sign' => $this->generateSign($serial, $code),
             'command' => 'charging',
         ])
@@ -96,13 +102,13 @@ class Thesieure
      */
     public function updateApprovedCard(string $telco, int $value, string $serial, string $code, string $requestId): ApprovedCard
     {
-        $response = Http::post('https://'.$this->domain.'/chargingws/v2', [
+        $response = Http::post('https://'.$this->getConfig('domain').'/chargingws/v2', [
             'telco' => $telco,
             'amount' => $value,
             'serial' => $serial,
             'code' => $code,
             'request_id' => $requestId,
-            'partner_id' => $this->partner_id,
+            'partner_id' => $this->getConfig('partner_id'),
             'sign' => $this->generateSign($serial, $code),
             'command' => 'check',
         ]);
@@ -116,7 +122,7 @@ class Thesieure
     /** Generate sign used when communicate with service server */
     public function generateSign(string $serial, string $code): string
     {
-        return md5($this->partner_key.$code.$serial);
+        return md5($this->getConfig('partner_key').$code.$serial);
     }
 
     /** Check sign whether is valid */

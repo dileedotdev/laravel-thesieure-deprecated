@@ -3,7 +3,6 @@
 namespace Dinhdjj\Thesieure;
 
 use Dinhdjj\Thesieure\Commands\ThesieureCommand;
-use Dinhdjj\Thesieure\Exceptions\InvalidThesieureConfigException;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -27,13 +26,7 @@ class ThesieureServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
-        $this->app->singleton('thesieure', function () {
-            if (!config('thesieure.domain') || !config('thesieure.partner_id') || !config('thesieure.partner_key')) {
-                throw new InvalidThesieureConfigException();
-            }
-
-            return new Thesieure(config('thesieure.domain'), config('thesieure.partner_id'), config('thesieure.partner_key'));
-        });
+        $this->app->singleton('thesieure', fn () => new Thesieure());
     }
 
     public function packageBooted(): void
