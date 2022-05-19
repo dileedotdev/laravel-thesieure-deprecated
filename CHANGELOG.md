@@ -2,6 +2,12 @@
 
 All notable changes to `thesieure` will be documented in this file.
 
+## v1.1.0 - 2022-05-18
+
+### What's News
+
+- `Thesieure` can macro
+
 ## v1.0.0 - 2022-05-17
 
 ### What's News
