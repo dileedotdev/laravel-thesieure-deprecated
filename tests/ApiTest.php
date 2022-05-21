@@ -20,14 +20,14 @@ beforeEach(function (): void {
 
 it('required fields', function ($field): void {
     unset($this->data[$field]);
-    post(config('thesieure.routes.callback.uri'), $this->data)
+    post(config('thesieure.callback.route.uri'), $this->data)
         ->assertSessionHasErrors($field)
     ;
 })->with(['callback_sign', 'request_id', 'telco', 'declared_value', 'serial', 'code', 'status']);
 
 it('throws if callback_sign is invalid', function (): void {
     $this->data['callback_sign'] = 'invalid';
-    postJson(config('thesieure.routes.callback.uri'), $this->data)
+    postJson(config('thesieure.callback.route.uri'), $this->data)
         ->assertStatus(401)
     ;
 });
@@ -39,7 +39,7 @@ it('will handle callbacks if everything okay', function (): void {
         $card = $approvedCard;
     });
 
-    postJson(config('thesieure.routes.callback.uri'), $this->data);
+    postJson(config('thesieure.callback.route.uri'), $this->data);
 
     expect($card->telco)->toBe($this->data['telco']);
     expect($card->declared_value)->toBe($this->data['declared_value']);

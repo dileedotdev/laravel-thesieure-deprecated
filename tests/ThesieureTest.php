@@ -4,9 +4,10 @@ use Dinhdjj\Thesieure\Exceptions\InvalidThesieureResponseException;
 use Dinhdjj\Thesieure\Facades\Thesieure;
 use Dinhdjj\Thesieure\Types\ApprovedCard;
 use Illuminate\Http\Client\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
-test('its fetchCardTypes method is working', function (): void {
+test('its forceFetchCardTypes method is working', function (): void {
     Http::fake([
         'thesieure.com/chargingws/v2/getfee*' => function (Request $request) {
             expect($request->url())->toStartWith('https://');
@@ -29,7 +30,7 @@ test('its fetchCardTypes method is working', function (): void {
         },
     ]);
 
-    $cardTypes = Thesieure::fetchCardTypes();
+    $cardTypes = Thesieure::forceFetchCardTypes();
 
     expect($cardTypes)->toHaveCount(2);
     expect($cardTypes[0]->telco)->toBe('VNMOBI');
@@ -38,11 +39,29 @@ test('its fetchCardTypes method is working', function (): void {
     expect($cardTypes[0]->penalty)->toBe(50);
 });
 
-test('its fetchCardTypes method throws InvalidThesieureResponseException', function (): void {
+test('its fetchCardTypes method should cache', function (): void {
+    Cache::shouldReceive('store')->once()->with(config('thesieure.fetch_card_types.cache.store'))->andReturnSelf();
+    Cache::shouldReceive('remember')->withSomeOfArgs(config('thesieure.fetch_card_types.cache.key'), config('thesieure.fetch_card_types.cache.ttl'))->once()->andReturn([]);
+
+    Thesieure::fetchCardTypes();
+});
+
+test('its fetchCardTypes method should not cache cache', function (): void {
+    Http::fake([
+        'thesieure.com/chargingws/v2/getfee*' => Http::response([]),
+    ]);
+    config(['thesieure.fetch_card_types.cache.enabled' => false]);
+    Cache::shouldReceive('store')->never()->with(config('thesieure.fetch_card_types.cache.store'))->andReturnSelf();
+    Cache::shouldReceive('remember')->withSomeOfArgs(config('thesieure.fetch_card_types.cache.key'), config('thesieure.fetch_card_types.cache.ttl'))->never()->andReturn([]);
+
+    Thesieure::fetchCardTypes();
+});
+
+test('its forceFetchCardTypes method throws InvalidThesieureResponseException', function (): void {
     Http::fake([
         'thesieure.com/chargingws/v2/getfee*' => Http::response([], 300),
     ]);
-    Thesieure::fetchCardTypes();
+    Thesieure::forceFetchCardTypes();
 })->throws(InvalidThesieureResponseException::class);
 
 test('its approveCard method is working', function (): void {

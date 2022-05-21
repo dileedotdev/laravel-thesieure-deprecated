@@ -8,6 +8,7 @@ use Dinhdjj\Thesieure\Exceptions\InvalidThesieureResponseException;
 use Dinhdjj\Thesieure\Types\ApprovedCard;
 use Dinhdjj\Thesieure\Types\FetchedCardType;
 use Illuminate\Http\Client\Response;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Traits\Macroable;
 
@@ -54,6 +55,24 @@ class Thesieure
      * @return \Dinhdjj\Thesieure\Types\FetchedCardType[]
      */
     public function fetchCardTypes(): array
+    {
+        if ($this->getConfig('fetch_card_types.cache.enabled')) {
+            return Cache::store($this->getConfig('fetch_card_types.cache.store'))->remember(
+                $this->getConfig('fetch_card_types.cache.key'),
+                $this->getConfig('fetch_card_types.cache.ttl'),
+                fn () => $this->forceFetchCardTypes()
+            );
+        }
+
+        return $this->forceFetchCardTypes();
+    }
+
+    /**
+     * Fetch card types from thesieure and bypass cache.
+     *
+     * @return \Dinhdjj\Thesieure\Types\FetchedCardType[]
+     */
+    public function forceFetchCardTypes(): array
     {
         $response = Http::get('https://'.$this->getConfig('domain').'/chargingws/v2/getfee?partner_id='.$this->getConfig('partner_id'));
 

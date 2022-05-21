@@ -5,7 +5,7 @@ use Dinhdjj\Thesieure\Types\ApprovedCard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::{config('thesieure.routes.callback.method', 'post')}(config('thesieure.routes.callback.uri', 'api/thesieure/callback'), function (Request $request) {
+Route::{config('thesieure.callback.route.method', 'post')}(config('thesieure.callback.route.uri', 'api/thesieure/callback'), function (Request $request) {
     $request->validate([
         'callback_sign' => ['required', 'string'],
         'request_id' => ['required', 'string'],
@@ -39,6 +39,6 @@ Route::{config('thesieure.routes.callback.method', 'post')}(config('thesieure.ro
 
     return response()->json(status: 200);
 })
-    ->middleware(config('thesieure.routes.callback.middleware', []))
-    ->name(config('thesieure.routes.callback.name', 'api.thesieure.callback'))
+    ->middleware(config('thesieure.callback.route.middleware', []))
+    ->name(config('thesieure.callback.route.name', 'api.thesieure.callback'))
 ;
