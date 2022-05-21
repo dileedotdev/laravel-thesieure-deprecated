@@ -2,6 +2,12 @@
 
 All notable changes to `thesieure` will be documented in this file.
 
+## v1.1.1 - 2022-05-19
+
+### Fix
+
+- Can't resolve `thesieure` in non-environment
+
 ## v1.1.0 - 2022-05-18
 
 ### What's News
