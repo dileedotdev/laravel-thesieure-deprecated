@@ -2,6 +2,16 @@
 
 All notable changes to `thesieure` will be documented in this file.
 
+## v1.2.0 - 2022-05-21
+
+### What's News
+
+- Can cache the result of `fetchCardTypes`
+
+### Breaking Changes
+
+- Refactor config
+
 ## v1.1.1 - 2022-05-19
 
 ### Fix
